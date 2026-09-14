@@ -10,7 +10,29 @@
         p.subtitle { text-align: center; color: #666; margin-bottom: 30px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
         .card { background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
-        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 6px; }
+        
+        /* ESTILOS MODIFICADOS PARA IMÁGENES Y CONTENEDOR */
+        .card-image-wrapper {
+            display: block; /* Para que el enlace ocupe todo el espacio */
+            width: 100%;
+            height: 200px; /* Altura fija para todas las tarjetas */
+            overflow: hidden; /* Oculta cualquier parte de la imagen que sobresalga */
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .card img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; /* Cambiado a 'contain' para que la imagen se ajuste completa dentro del contenedor sin cortarse */
+            background-color: #f9f9f9; /* Fondo suave por si la imagen no llena el espacio */
+            transition: transform 0.2s; /* Efecto suave al pasar el mouse (opcional) */
+        }
+        
+        .card-image-wrapper:hover img {
+            transform: scale(1.05); /* Ligero zoom al pasar el mouse (opcional) */
+        }
+
         .price { font-weight: bold; color: #27ae60; font-size: 1.2em; margin: 10px 0; }
         .btn-whatsapp { display: inline-block; background: #25d366; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px; }
         .btn-whatsapp:hover { background: #20ba5a; }
@@ -19,20 +41,24 @@
 <body>
 
     <h1>Catálogo de Relojes</h1>
-    <p class="subtitle">Haz clic en "Consultar por WhatsApp" para coordinar tu compra.</p>
+    <p class="subtitle">Haz clic en la imagen para verla en detalle. Toca "Consultar por WhatsApp" para coordinar tu compra.</p>
 
     <div class="grid" id="catalogo-productos"></div>
 
     <script>
         const numeroWhatsApp = "5491159828985";
         const contenedor = document.getElementById("catalogo-productos");
-        const totalProductos = 48; // Cantidad total de fotos
+        const totalProductos = 48;
 
         for (let i = 1; i <= totalProductos; i++) {
             const card = document.createElement("div");
             card.className = "card";
+            
+            // Construimos la tarjeta con el enlace alrededor de la imagen
             card.innerHTML = `
-                <img src="img/Prod${i}.jpeg" alt="Reloj ${i}">
+                <a href="img/Prod${i}.jpeg" target="_blank" class="card-image-wrapper" title="Ampliar Imagen">
+                    <img src="img/Prod${i}.jpeg" alt="Reloj ${i}">
+                </a>
                 <h3>Reloj Modelo ${i}</h3>
                 <div class="price">Consultar precio</div>
                 <p>Disponible por encargo o stock.</p>
