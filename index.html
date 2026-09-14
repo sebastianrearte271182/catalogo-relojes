@@ -18,6 +18,7 @@
             overflow: hidden;
             border-radius: 6px;
             margin-bottom: 10px;
+            cursor: pointer; /* Muestra la manito al pasar el cursor */
         }
         
         .card img { 
@@ -25,48 +26,119 @@
             height: 100%; 
             object-fit: contain; 
             background-color: #f9f9f9; 
+            transition: transform 0.2s;
+        }
+        
+        .card-image-wrapper:hover img {
+            transform: scale(1.05);
         }
 
         .price { font-weight: bold; color: #27ae60; font-size: 1.2em; margin: 10px 0; }
         .btn-whatsapp { display: inline-block; background: #25d366; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px; }
         .btn-whatsapp:hover { background: #20ba5a; }
+
+        /* ESTILOS DE LA VENTANA FLOTANTE (MODAL) */
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Fondo negro semitransparente */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 45px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
     </style>
 </head>
 <body>
 
     <h1>Catálogo de Relojes</h1>
-    <p class="subtitle">Haz clic en la imagen para ampliarla. Toca "Consultar por WhatsApp" para enviar el modelo y la foto directamente.</p>
+    <p class="subtitle">Toca cualquier imagen para verla en grande. Toca "Consultar por WhatsApp" para enviar el modelo y la foto.</p>
 
     <div class="grid" id="catalogo-productos"></div>
+
+    <!-- VENTANA FLOTANTE (MODAL) PARA LA IMAGEN AMPLIADA -->
+    <div id="imageModal" class="modal">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <img class="modal-content" id="modalImg" alt="Imagen ampliada">
+    </div>
 
     <script>
         const numeroWhatsApp = "5491159828985";
         const contenedor = document.getElementById("catalogo-productos");
         const totalProductos = 48;
 
-        // Detecta la URL base actual de tu página web en GitHub Pages
         const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
 
         for (let i = 1; i <= totalProductos; i++) {
             const card = document.createElement("div");
             card.className = "card";
             
-            // URL directa de la foto de este reloj específico
             const urlFoto = baseUrl + `img/Prod${i}.jpeg`;
-            
-            // Texto del mensaje que incluye el saludo, el modelo y el link de la foto
             const textoMensaje = encodeURIComponent(`Hola, me interesa el Reloj Modelo ${i}. Vi esta foto: ${urlFoto}`);
 
             card.innerHTML = `
-                <a href="img/Prod${i}.jpeg" target="_blank" class="card-image-wrapper" title="Ampliar Imagen">
+                <div class="card-image-wrapper" onclick="abrirModal('img/Prod${i}.jpeg')" title="Ampliar imagen">
                     <img src="img/Prod${i}.jpeg" alt="Reloj ${i}">
-                </a>
+                </div>
                 <h3>Reloj Modelo ${i}</h3>
                 <div class="price">Consultar precio</div>
                 <p>Disponible por encargo o stock.</p>
                 <a href="https://wa.me/${numeroWhatsApp}?text=${textoMensaje}" class="btn-whatsapp" target="_blank">Consultar por WhatsApp</a>
             `;
             contenedor.appendChild(card);
+        }
+
+        // Lógica para abrir y cerrar el modal
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImg");
+        const closeModal = document.getElementById("closeModal");
+
+        function abrirModal(rutaImagen) {
+            modal.style.display = "flex";
+            modalImg.src = rutaImagen;
+        }
+
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // También se cierra si hacen clic fuera de la foto (en el fondo oscuro)
+        modal.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 
